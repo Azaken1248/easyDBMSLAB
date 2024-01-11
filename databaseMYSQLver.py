@@ -29,10 +29,15 @@ def databaseEditor(cursor):
         
         if("D!" in database):
             tempList = list(database.split())
-            cursor.execute("drop database %s"%tempList[1])
+            try:
+                cursor.execute("drop database %s"%tempList[1])
+            except:
+                print("\nWrong Format!\n")
         else:
-            cursor.execute("create database %s"%database)
-    
+            try:
+                cursor.execute("create database %s"%database)
+            except:
+                print("\nWrong Format!\n")
     
 def tableEditor(cursor):
     while True:
@@ -74,13 +79,17 @@ def tableEditor(cursor):
         
                 if("D!" in table):
                     tempList = list(table.split())
-                    cursor.execute("drop table %s"%tempList[1])
+                    try:
+                        cursor.execute("drop table %s"%tempList[1])
+                    except:
+                        print("\nTable Not Dropped!!\n")
                 else:
                     table_data = table.split('-', 1)
                     table_name = table_data[0].strip()
                     table_attributes = table_data[1].strip().replace(',', ', ')
 
                     create_table_query = "CREATE TABLE IF NOT EXISTS `{}` ({})".format(table_name, table_attributes)
+                    #print("Log : ",create_table_query)
                     try:
                         cursor.execute(create_table_query)
                         print("Table {} created successfully.".format(table_name))
@@ -230,8 +239,7 @@ def InteractiveMode(cursor):
         valueEditor(cursor)
     else:
         print("INVALID Choice!!")
-        
-    
+      
 
 while True:
     
@@ -244,13 +252,14 @@ while True:
     except KeyboardInterrupt:
         print("\nForce Exit...Done!\n")
         exit()
+    except ValueError:
+        print("\nWrong Format!!!\n")
+        print("\nselecting defualt mode choice...\n")
+        modechoice = 1
 
     if(modechoice == 1):
          queryMode(cursor)
     elif(modechoice == 2):
         InteractiveMode(cursor)
     else:
-         print("INVALID Choice!!")
-
-        
-    
+         print("\nINVALID Choice!!\n")
