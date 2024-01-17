@@ -89,7 +89,7 @@ def tableEditor(cursor):
                     table_attributes = table_data[1].strip().replace(',', ', ')
 
                     create_table_query = "CREATE TABLE IF NOT EXISTS `{}` ({})".format(table_name, table_attributes)
-                    #print("Log : ",create_table_query)
+                    #   print("Log : ",create_table_query)
                     try:
                         cursor.execute(create_table_query)
                         print("Table {} created successfully.".format(table_name))
@@ -250,6 +250,10 @@ while True:
     try:
         modechoice = int(input("\nChoose Mode:-\n(1) Query Mode\n(2) Interactive Mode\nEnter Your Choice: "))
     except KeyboardInterrupt:
+        commit_status = input("\nCommit Changes(y/n): ")
+        if(commit_status in 'yY'):
+            cursor.execute("commit")
+            print("\nChanges Saved.\n")
         print("\nForce Exit...Done!\n")
         exit()
     except ValueError:
