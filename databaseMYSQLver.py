@@ -186,7 +186,7 @@ def valueEditor(cursor):
                                 continue
                         
 
-try:
+'''try:
         con = connection()
 except:
     print("connection failed!")
@@ -195,7 +195,7 @@ except:
         print("Please re enter details(ctrl+c to exit):-")
         con = connection()
     except KeyboardInterrupt:
-         exit()
+         exit()'''
     
 
 def queryMode(cursor):
@@ -241,7 +241,7 @@ def InteractiveMode(cursor):
         print("INVALID Choice!!")
       
 
-while True:
+'''while True:
     
     
 
@@ -266,4 +266,4 @@ while True:
     elif(modechoice == 2):
         InteractiveMode(cursor)
     else:
-         print("\nINVALID Choice!!\n")
+         print("\nINVALID Choice!!\n")'''
