@@ -12,6 +12,12 @@ def connection():
 
     return con
 
+def connection(hostvalue,username,passkey):
+    con = mscon.connect(host = hostvalue, user = username, password = passkey)
+    print("\nconnection successful!")
+
+    return con
+
 def databaseEditor(cursor):
     while True:
         print("\nHere Is The List Of Data Bases:-")
@@ -199,7 +205,7 @@ except:
     
 
 def queryMode(cursor):
-     
+    ret_data = []
     while True:
         try:
             query = input("\nEnter Your Query(ctrl+C To Exit): \n")
@@ -218,10 +224,22 @@ def queryMode(cursor):
         if(data):
             for rawdata in data:
                 print(rawdata)
+                ret_data.append(rawdata)
         else:
             print("\nQuery Executed Sucessfully!\n")
         
         print("\n")
+        return ret_data
+        
+
+def queryMode(cursor,query):
+    rawdata = None
+    try:
+        cursor.execute(query)
+    except:
+        pass
+    rawdata = cursor.fetchall()
+    return rawdata
 
 def InteractiveMode(cursor):
      
