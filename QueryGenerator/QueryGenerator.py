@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 gpt = OpenAI(
-    api_key="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"
+    api_key="INSERT API KEY"
 ) 
 
 prompt = input("ASK AWAY: ")
