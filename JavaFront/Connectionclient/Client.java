@@ -43,7 +43,7 @@ public class Client {
         return responseCode;
     }
 
-    public static void receiveDataFromServerAndStoreAsFile() throws Exception {
+    public static String receiveDataFromServerAndStoreAsFile() throws Exception {
         URL url = new URL("http://localhost:5000/data"); // Corrected URL
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -65,16 +65,36 @@ public class Client {
         writer.close();
 
         System.out.println("Received data has been stored as 'received_data.txt'");
+
+        return receivedData;
     }
 
     public static int connectToDB(String host, String user, String pass) {
-        String json_data = "{\"host\": \"" + host + "\", \"user\": \"" + user + "\", \"password\": \"" + pass + "\"}";
+        String json_data = "{\"host\": \"" + host + "\", \"user\": \"" + user + "\", \"password,\": \"" + pass + "\"}";
 
         try {
             int response = sendDataToServer(json_data);
             return response;
         } catch (Exception e) {
             return -1;
+        }
+    }
+
+    public static int sendQuery(String query) {
+        String query_data = "{\"query\":\"" + query + "\"}";
+        try {
+            int response = sendDataToServer(query_data);
+            return response;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    public static String retrieveResults() {
+        try {
+            return receiveDataFromServerAndStoreAsFile();
+        } catch (Exception e) {
+            return "";
         }
     }
 }

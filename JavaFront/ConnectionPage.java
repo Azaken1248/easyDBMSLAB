@@ -162,14 +162,11 @@ public class ConnectionPage implements ActionListener, MouseListener {
                         } else {
                                 conLabel.setText("Connection Successful!");
                                 conLabel.setForeground(Color.green);
-                        }
 
-                        /*
-                         * if (conLabel.getText().equals("Connection Successful!")) {
-                         * new QueryPage();
-                         * window.dispose();
-                         * }
-                         */
+                                new QueryPage();
+
+                                window.dispose();
+                        }
                 }
         }
 

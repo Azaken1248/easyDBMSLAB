@@ -1,1 +1,0 @@
-{  "databases": [    "bharath",    "da1",    "information_schema",    "mysql",    "performance_schema",    "qwwqedfg",    "rohitbase",    "sakila",    "sys",    "test",    "testbase",    "world",    "yes"  ]}

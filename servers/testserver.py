@@ -28,28 +28,47 @@ def handle_data():
         req_data = request.get_json()
         print("Received data:", req_data)
       
-        filename = 'data.json'
+        creds = 'credentials.json'
+        query = "queries.json"
         
-        with open(filename, 'w') as json_file:
-            json.dump(req_data, json_file, indent=4)
+        if("host" in req_data.keys()):
+            with open(creds, 'w') as json_file:
+                json.dump(req_data, json_file, indent=4)
+        if("query" in req_data.keys()):
+            with open(query, 'w') as json_file:
+                json.dump(req_data,json_file,indent=4)
         
         
         return jsonify({"message": "Data received successfully"})
     
     elif request.method == 'GET':
-        file = open('data.json','r')
-        data = json.load(file)
+        print("IN GET")
+        creds = open('credentials.json','r')
+        credentials = json.load(creds)
+        
+        queryFile = open('queries.json','r')
+        queries = json.load(queryFile)
+        
         
         con = None
         
         try:
-            con = connection(data['host'],data['user'],data['passwprd'])
+            con = connection(credentials['host'],credentials['user'],credentials['passwprd'])
         except KeyError:
             print("Can't Connect Without Credentials!")
         
         cursor = con.cursor()
         
-        return jsonify(data)
+        if(queries["query"]):
+            try:
+                cursor.execute(queries["query"])
+                resultSet = cursor.fetchall()
+            except:
+                pass
+        header = [desc[0] for desc in cursor.description]    
+        resultSet = toJson(header,resultSet)
+        
+        return jsonify(resultSet)
 
 if __name__ == '__main__':
     app.run(debug=True)
