@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from databaseMYSQLver import connection
+from QueryGenerator import *;
 import json
 
 app = Flask(__name__)
@@ -15,7 +16,7 @@ def get_db_connection():
 
         # Attempt to establish a new connection if it doesn't exist
         try:
-            db_connection = connection(credentials['host'], credentials['user'], credentials['password,'])
+            db_connection = connection(credentials['host'], credentials['user'], credentials['password'])
         except Exception as e:
             print("Can't Connect Without Credentials!", e)
     return db_connection
@@ -23,16 +24,18 @@ def get_db_connection():
 def to_json(header, data):
     json_data = {}
 
-    # Add header tuple to JSON data
-    header_key = header[0]
-    json_data[header_key] = []
+    # Iterate over each column in the header
+    for idx, column_name in enumerate(header):
+        json_data[column_name] = []
 
-    for tup in data:
-        value = tup[0]
-        json_data[header_key].append(value)
+        # Iterate over each row in the data
+        for row in data:
+            # Append the value of the corresponding column in the row to the JSON data
+            json_data[column_name].append(row[idx])
 
     print("returned : ", json_data)
     return json_data
+
 
 
 @app.route('/data', methods=['GET', 'POST'])

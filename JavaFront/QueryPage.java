@@ -1,6 +1,10 @@
+import java.util.Set;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 import Connectionclient.Client;
 
@@ -17,6 +21,69 @@ public class QueryPage implements ActionListener, MouseListener {
         JLabel welcomeLabel, descriptorLabel, queryLabel, displayLabel;
         JTextField queryField;
         JButton executeButton;
+        JTable resultsTable;
+        DefaultTableModel tableModel;
+
+        public static String[] getCols() {
+                Object[] cols;
+                String[] ret_cols;
+
+                JSONReader reader = new JSONReader();
+
+                String data = reader.readJsonFromFile("received_data.json");
+
+                Set<String> cols_set = reader.getKeysFromJSON(data);
+
+                cols = cols_set.toArray();
+                ret_cols = new String[cols.length];
+
+                for (int i = 0; i < cols.length; i++) {
+                        String col = cols[i].toString();
+                        ret_cols[i] = col;
+                }
+
+                return ret_cols;
+        }
+
+        public static Object[][] getData(String[] cols) {
+                Object[][] dataVals = null;
+
+                JSONReader reader = new JSONReader();
+
+                String data = reader.readJsonFromFile("received_data.json");
+
+                List<Object> vals = reader.getArrayValues(data, cols[0]);
+
+                dataVals = new Object[cols.length][vals.size()];
+
+                for (int i = 0; i < cols.length; i++) {
+                        vals = reader.getArrayValues(data, cols[i]);
+                        for (int j = 0; j < vals.size(); j++) {
+                                String check = vals.get(j).toString();
+                                check = check.replace("[", "").replace("]", "");
+                                check = check.replace("\"", "");
+                                check = check.replace(" ", "");
+                                dataVals[i][j] = (Object) check;
+                        }
+                }
+
+                return dataVals;
+        }
+
+        public static Object[][] transposeArray(Object[][] array) {
+                int rows = array.length;
+                int cols = array[0].length;
+
+                Object[][] transposedArray = new Object[cols][rows];
+
+                for (int i = 0; i < rows; i++) {
+                        for (int j = 0; j < cols; j++) {
+                                transposedArray[j][i] = array[i][j];
+                        }
+                }
+
+                return transposedArray;
+        }
 
         QueryPage() {
                 icon = new ImageIcon("./Assets/icon.png");
@@ -47,7 +114,7 @@ public class QueryPage implements ActionListener, MouseListener {
 
                 footer = new JPanel();
                 footer.setBackground(Color.black);
-                footer.setBorder(BorderFactory.createEmptyBorder(100, 90, 10, 90));
+                footer.setBorder(BorderFactory.createEmptyBorder(120, 90, 10, 90));
                 footer.setLayout(new FlowLayout());
 
                 welcomeLabel = new JLabel("Welcome To SQL Connector");
@@ -78,14 +145,15 @@ public class QueryPage implements ActionListener, MouseListener {
                 queryField.setBackground(Color.black);
                 queryField.setForeground(Color.white);
                 queryField.setCaretColor(Color.white);
-                queryField.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10),
+                queryField.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 0, 10),
                                 new LineBorder(Color.white, 3, true)));
                 queryField.setFont(new Font("Calibri", 0, 20));
 
                 executeButton = new JButton("           Execute           ");
                 executeButton.setFocusable(false);
-                executeButton.setBackground(Color.white);
-                executeButton.setForeground(Color.black);
+                executeButton.setBackground(Color.black);
+                executeButton.setForeground(Color.white);
+                executeButton.setSize(new Dimension(100, 100));
                 executeButton.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10),
                                 new LineBorder(Color.white, 2, true)));
                 executeButton.setFont(new Font("Calibri", 0, 20));
@@ -132,7 +200,14 @@ public class QueryPage implements ActionListener, MouseListener {
                         if (!(results.equals(""))) {
                                 displayLabel.setForeground(Color.green);
                                 displayLabel.setText("Query Executed Succesfully!");
-                                System.out.println(results);
+
+                                String[] cols = getCols();
+                                Object[][] data = getData(cols);
+
+                                data = transposeArray(data);
+
+                                new ResultsWindow(cols, data);
+
                         }
 
                 }
@@ -173,8 +248,8 @@ public class QueryPage implements ActionListener, MouseListener {
         @Override
         public void mouseExited(MouseEvent e) {
                 if (e.getSource() == executeButton) {
-                        executeButton.setBackground(Color.white);
-                        executeButton.setForeground(Color.black);
+                        executeButton.setBackground(Color.black);
+                        executeButton.setForeground(Color.white);
                 }
         }
 }

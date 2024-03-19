@@ -60,7 +60,7 @@ public class Client {
 
         // Store received data as a file
         String receivedData = content.toString();
-        BufferedWriter writer = new BufferedWriter(new FileWriter("received_data.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("received_data.json"));
         writer.write(receivedData);
         writer.close();
 
@@ -70,7 +70,7 @@ public class Client {
     }
 
     public static int connectToDB(String host, String user, String pass) {
-        String json_data = "{\"host\": \"" + host + "\", \"user\": \"" + user + "\", \"password,\": \"" + pass + "\"}";
+        String json_data = "{\"host\": \"" + host + "\", \"user\": \"" + user + "\", \"password\": \"" + pass + "\"}";
 
         try {
             int response = sendDataToServer(json_data);
